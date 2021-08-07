@@ -16,6 +16,8 @@ RUN apt-get update && \
     mv -v buf/bin/* /usr/local/bin && rm -f buf-Linux-x86_64.tar.gz
 
 RUN useradd -ms /bin/bash gouser
+RUN chown -R gouser:gouser /go
+RUN chmod 755 /go
 USER gouser
 WORKDIR /home/gouser/go
 
