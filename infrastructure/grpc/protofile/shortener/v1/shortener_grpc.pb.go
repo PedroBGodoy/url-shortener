@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ShortenerServiceClient interface {
-	CreateShortener(ctx context.Context, in *CreateShortenRequest, opts ...grpc.CallOption) (*CreateShortenResponse, error)
+	Shorten(ctx context.Context, in *CreateShortenRequest, opts ...grpc.CallOption) (*CreateShortenResponse, error)
 }
 
 type shortenerServiceClient struct {
@@ -29,9 +29,9 @@ func NewShortenerServiceClient(cc grpc.ClientConnInterface) ShortenerServiceClie
 	return &shortenerServiceClient{cc}
 }
 
-func (c *shortenerServiceClient) CreateShortener(ctx context.Context, in *CreateShortenRequest, opts ...grpc.CallOption) (*CreateShortenResponse, error) {
+func (c *shortenerServiceClient) Shorten(ctx context.Context, in *CreateShortenRequest, opts ...grpc.CallOption) (*CreateShortenResponse, error) {
 	out := new(CreateShortenResponse)
-	err := c.cc.Invoke(ctx, "/shortener.v1.ShortenerService/CreateShortener", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/shortener.v1.ShortenerService/Shorten", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,15 +42,15 @@ func (c *shortenerServiceClient) CreateShortener(ctx context.Context, in *Create
 // All implementations should embed UnimplementedShortenerServiceServer
 // for forward compatibility
 type ShortenerServiceServer interface {
-	CreateShortener(context.Context, *CreateShortenRequest) (*CreateShortenResponse, error)
+	Shorten(context.Context, *CreateShortenRequest) (*CreateShortenResponse, error)
 }
 
 // UnimplementedShortenerServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedShortenerServiceServer struct {
 }
 
-func (UnimplementedShortenerServiceServer) CreateShortener(context.Context, *CreateShortenRequest) (*CreateShortenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateShortener not implemented")
+func (UnimplementedShortenerServiceServer) Shorten(context.Context, *CreateShortenRequest) (*CreateShortenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Shorten not implemented")
 }
 
 // UnsafeShortenerServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -64,20 +64,20 @@ func RegisterShortenerServiceServer(s grpc.ServiceRegistrar, srv ShortenerServic
 	s.RegisterService(&ShortenerService_ServiceDesc, srv)
 }
 
-func _ShortenerService_CreateShortener_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ShortenerService_Shorten_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateShortenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShortenerServiceServer).CreateShortener(ctx, in)
+		return srv.(ShortenerServiceServer).Shorten(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/shortener.v1.ShortenerService/CreateShortener",
+		FullMethod: "/shortener.v1.ShortenerService/Shorten",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShortenerServiceServer).CreateShortener(ctx, req.(*CreateShortenRequest))
+		return srv.(ShortenerServiceServer).Shorten(ctx, req.(*CreateShortenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -90,8 +90,8 @@ var ShortenerService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ShortenerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateShortener",
-			Handler:    _ShortenerService_CreateShortener_Handler,
+			MethodName: "Shorten",
+			Handler:    _ShortenerService_Shorten_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -14,5 +14,5 @@ message CreateShortenResponse {
 }
 
 service ShortenerService {
-    rpc CreateShortener(CreateShortenRequest) returns (CreateShortenResponse) {}
+    rpc Shorten(CreateShortenRequest) returns (CreateShortenResponse) {}
 }
