@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/pedrobgodoy/url-shortener/infrastructure/grpc/protofile/shortener/v1"
+	"github.com/pedrobgodoy/url-shortener/infrastructure/grpc/gen/shortener/v1"
 	"github.com/pedrobgodoy/url-shortener/usecase"
 )
 

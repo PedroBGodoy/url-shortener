@@ -6,20 +6,25 @@ up:
 down:
 	docker-compose down --remove-orphans
 
-.PHONY: gen
-gen:
+.PHONY: buf\:gen
+buf\:gen:
 	docker-compose up -d
 	docker-compose exec app buf generate
 
-.PHONY: lint
-lint:
+.PHONY: buf\:lint
+buf\:lint:
 	docker-compose up -d
 	docker-compose exec app buf lint
+
+.PHONY: buf\:update
+buf\:update:
+	docker-compose up -d
+	docker-compose exec app buf mod update
 
 .PHONY: run
 run:
 	docker-compose up -d
-	docker-compose exec app go run cmd/shortener/main.go
+	docker-compose exec app go run main.go
 
 .PHONY: run\:dev
 run\:dev:
