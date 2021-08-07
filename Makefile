@@ -1,7 +1,6 @@
-.PHONY: dev
-dev:
+.PHONY: up
+up:
 	docker-compose up -d
-	docker-compose exec app bash
 
 .PHONY: down
 down:
@@ -9,12 +8,35 @@ down:
 
 .PHONY: gen
 gen:
-	buf generate
+	docker-compose up -d
+	docker-compose exec app buf generate
 
 .PHONY: lint
 lint:
-	buf lint
+	docker-compose up -d
+	docker-compose exec app buf lint
 
 .PHONY: run
 run:
-	go run cmd/shortener/main.go
+	docker-compose up -d
+	docker-compose exec app go run cmd/shortener/main.go
+
+.PHONY: run\:dev
+run\:dev:
+	docker-compose up -d
+	docker-compose exec app fresh
+
+.PHONY: evans
+evans:
+	docker-compose up -d
+	docker-compose exec app evans -r
+
+.PHONY: tidy
+tidy:
+	docker-compose up -d
+	docker-compose exec app go mod tidy
+
+.PHONY: vet
+vet:
+	docker-compose up -d
+	docker-compose exec app go vet ./...
