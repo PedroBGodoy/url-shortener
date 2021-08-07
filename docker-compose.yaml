@@ -1,0 +1,28 @@
+version: "3.9"
+
+services: 
+  app:
+    container_name: shortener
+    build: 
+      context: .
+      dockerfile: Dockerfile.local
+    volumes: 
+      - .:/home/gouser/go
+    ports: 
+      - "50051:50051"
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    depends_on: 
+      - db
+  
+  db:
+    container_name: shortener-db
+    image: postgres:13.3
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=shortener
+    ports:
+      - "54320:5432"
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"

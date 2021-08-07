@@ -1,0 +1,22 @@
+FROM golang:1.16
+
+ENV PATH="/go/bin:${PATH}"
+ENV GO111MODULE=on
+ENV CGO_ENABLED=1
+
+RUN apt-get update && \
+    apt-get install build-essential protobuf-compiler -y && \
+    go get google.golang.org/grpc/cmd/protoc-gen-go-grpc && \
+    go get google.golang.org/protobuf/cmd/protoc-gen-go && \
+    wget https://github.com/ktr0731/evans/releases/download/0.10.0/evans_linux_amd64.tar.gz && \
+    tar -xzvf evans_linux_amd64.tar.gz && \
+    mv evans /usr/local/bin && rm -f evans_linux_amd64.tar.gz && \
+    wget https://github.com/bufbuild/buf/releases/download/v0.48.2/buf-Linux-x86_64.tar.gz && \
+    tar -xzvf buf-Linux-x86_64.tar.gz && \
+    mv -v buf/bin/* /usr/local/bin && rm -f buf-Linux-x86_64.tar.gz
+
+RUN useradd -ms /bin/bash gouser
+USER gouser
+WORKDIR /home/gouser/go
+
+CMD ["tail", "-f", "/dev/null"]
