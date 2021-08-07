@@ -14,3 +14,7 @@ gen:
 .PHONY: lint
 lint:
 	buf lint
+
+.PHONY: run
+run:
+	go run cmd/shortener/main.go
