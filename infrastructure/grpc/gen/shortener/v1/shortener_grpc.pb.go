@@ -18,7 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ShortenerServiceClient interface {
-	Shorten(ctx context.Context, in *CreateShortenRequest, opts ...grpc.CallOption) (*CreateShortenResponse, error)
+	Shorten(ctx context.Context, in *ShortenRequest, opts ...grpc.CallOption) (*Bitlink, error)
+	GetBitlink(ctx context.Context, in *GetBitlinkRequest, opts ...grpc.CallOption) (*Bitlink, error)
 }
 
 type shortenerServiceClient struct {
@@ -29,9 +30,18 @@ func NewShortenerServiceClient(cc grpc.ClientConnInterface) ShortenerServiceClie
 	return &shortenerServiceClient{cc}
 }
 
-func (c *shortenerServiceClient) Shorten(ctx context.Context, in *CreateShortenRequest, opts ...grpc.CallOption) (*CreateShortenResponse, error) {
-	out := new(CreateShortenResponse)
+func (c *shortenerServiceClient) Shorten(ctx context.Context, in *ShortenRequest, opts ...grpc.CallOption) (*Bitlink, error) {
+	out := new(Bitlink)
 	err := c.cc.Invoke(ctx, "/shortener.v1.ShortenerService/Shorten", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *shortenerServiceClient) GetBitlink(ctx context.Context, in *GetBitlinkRequest, opts ...grpc.CallOption) (*Bitlink, error) {
+	out := new(Bitlink)
+	err := c.cc.Invoke(ctx, "/shortener.v1.ShortenerService/GetBitlink", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,15 +52,19 @@ func (c *shortenerServiceClient) Shorten(ctx context.Context, in *CreateShortenR
 // All implementations should embed UnimplementedShortenerServiceServer
 // for forward compatibility
 type ShortenerServiceServer interface {
-	Shorten(context.Context, *CreateShortenRequest) (*CreateShortenResponse, error)
+	Shorten(context.Context, *ShortenRequest) (*Bitlink, error)
+	GetBitlink(context.Context, *GetBitlinkRequest) (*Bitlink, error)
 }
 
 // UnimplementedShortenerServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedShortenerServiceServer struct {
 }
 
-func (UnimplementedShortenerServiceServer) Shorten(context.Context, *CreateShortenRequest) (*CreateShortenResponse, error) {
+func (UnimplementedShortenerServiceServer) Shorten(context.Context, *ShortenRequest) (*Bitlink, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Shorten not implemented")
+}
+func (UnimplementedShortenerServiceServer) GetBitlink(context.Context, *GetBitlinkRequest) (*Bitlink, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBitlink not implemented")
 }
 
 // UnsafeShortenerServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -65,7 +79,7 @@ func RegisterShortenerServiceServer(s grpc.ServiceRegistrar, srv ShortenerServic
 }
 
 func _ShortenerService_Shorten_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateShortenRequest)
+	in := new(ShortenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -77,7 +91,25 @@ func _ShortenerService_Shorten_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/shortener.v1.ShortenerService/Shorten",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShortenerServiceServer).Shorten(ctx, req.(*CreateShortenRequest))
+		return srv.(ShortenerServiceServer).Shorten(ctx, req.(*ShortenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ShortenerService_GetBitlink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBitlinkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShortenerServiceServer).GetBitlink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/shortener.v1.ShortenerService/GetBitlink",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShortenerServiceServer).GetBitlink(ctx, req.(*GetBitlinkRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -92,6 +124,10 @@ var ShortenerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Shorten",
 			Handler:    _ShortenerService_Shorten_Handler,
+		},
+		{
+			MethodName: "GetBitlink",
+			Handler:    _ShortenerService_GetBitlink_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

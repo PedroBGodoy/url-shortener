@@ -9,9 +9,6 @@
       "name": "ShortenerService"
     }
   ],
-  "schemes": [
-    "https"
-  ],
   "consumes": [
     "application/json"
   ],
@@ -19,14 +16,14 @@
     "application/json"
   ],
   "paths": {
-    "/api/v1/shorten": {
+    "/api/v1/bitlink": {
       "post": {
         "operationId": "ShortenerService_Shorten",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1CreateShortenResponse"
+              "$ref": "#/definitions/v1Bitlink"
             }
           },
           "default": {
@@ -42,8 +39,38 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1CreateShortenRequest"
+              "$ref": "#/definitions/v1ShortenRequest"
             }
+          }
+        ],
+        "tags": [
+          "ShortenerService"
+        ]
+      }
+    },
+    "/api/v1/bitlink/{bitlinkId}": {
+      "get": {
+        "operationId": "ShortenerService_GetBitlink",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Bitlink"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "bitlinkId",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "tags": [
@@ -83,21 +110,27 @@
         }
       }
     },
-    "v1CreateShortenRequest": {
+    "v1Bitlink": {
       "type": "object",
       "properties": {
+        "bitlinkId": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        },
         "longUrl": {
+          "type": "string"
+        },
+        "createdAt": {
           "type": "string"
         }
       }
     },
-    "v1CreateShortenResponse": {
+    "v1ShortenRequest": {
       "type": "object",
       "properties": {
         "longUrl": {
-          "type": "string"
-        },
-        "link": {
           "type": "string"
         }
       }

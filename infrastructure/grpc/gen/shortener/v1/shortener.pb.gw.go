@@ -32,7 +32,7 @@ var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
 func request_ShortenerService_Shorten_0(ctx context.Context, marshaler runtime.Marshaler, client ShortenerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateShortenRequest
+	var protoReq ShortenRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -49,7 +49,7 @@ func request_ShortenerService_Shorten_0(ctx context.Context, marshaler runtime.M
 }
 
 func local_request_ShortenerService_Shorten_0(ctx context.Context, marshaler runtime.Marshaler, server ShortenerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateShortenRequest
+	var protoReq ShortenRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -61,6 +61,58 @@ func local_request_ShortenerService_Shorten_0(ctx context.Context, marshaler run
 	}
 
 	msg, err := server.Shorten(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_ShortenerService_GetBitlink_0(ctx context.Context, marshaler runtime.Marshaler, client ShortenerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetBitlinkRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["bitlink_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "bitlink_id")
+	}
+
+	protoReq.BitlinkId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bitlink_id", err)
+	}
+
+	msg, err := client.GetBitlink(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ShortenerService_GetBitlink_0(ctx context.Context, marshaler runtime.Marshaler, server ShortenerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetBitlinkRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["bitlink_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "bitlink_id")
+	}
+
+	protoReq.BitlinkId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bitlink_id", err)
+	}
+
+	msg, err := server.GetBitlink(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -77,7 +129,7 @@ func RegisterShortenerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/shortener.v1.ShortenerService/Shorten", runtime.WithHTTPPathPattern("/api/v1/shorten"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/shortener.v1.ShortenerService/Shorten", runtime.WithHTTPPathPattern("/api/v1/bitlink"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -91,6 +143,29 @@ func RegisterShortenerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_ShortenerService_Shorten_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_ShortenerService_GetBitlink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/shortener.v1.ShortenerService/GetBitlink", runtime.WithHTTPPathPattern("/api/v1/bitlink/{bitlink_id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ShortenerService_GetBitlink_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ShortenerService_GetBitlink_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -139,7 +214,7 @@ func RegisterShortenerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/shortener.v1.ShortenerService/Shorten", runtime.WithHTTPPathPattern("/api/v1/shorten"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/shortener.v1.ShortenerService/Shorten", runtime.WithHTTPPathPattern("/api/v1/bitlink"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -155,13 +230,37 @@ func RegisterShortenerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 
 	})
 
+	mux.Handle("GET", pattern_ShortenerService_GetBitlink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/shortener.v1.ShortenerService/GetBitlink", runtime.WithHTTPPathPattern("/api/v1/bitlink/{bitlink_id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ShortenerService_GetBitlink_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ShortenerService_GetBitlink_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
 var (
-	pattern_ShortenerService_Shorten_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "shorten"}, ""))
+	pattern_ShortenerService_Shorten_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "bitlink"}, ""))
+
+	pattern_ShortenerService_GetBitlink_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "bitlink", "bitlink_id"}, ""))
 )
 
 var (
 	forward_ShortenerService_Shorten_0 = runtime.ForwardResponseMessage
+
+	forward_ShortenerService_GetBitlink_0 = runtime.ForwardResponseMessage
 )

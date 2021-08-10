@@ -12,23 +12,34 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 		title: "Shortener API";
 		version: "1.0";
 	};
-	schemes: HTTPS;
 };
 
-message CreateShortenRequest {
+message Bitlink {
+    string bitlink_id = 1;
+    string link = 2;
+    string long_url = 3;
+    string created_at = 4;
+}
+
+message ShortenRequest {
     string long_url = 1;
 }
 
-message CreateShortenResponse {
-    string long_url = 1;
-    string link = 2;
+message GetBitlinkRequest {
+    string bitlink_id = 1;
 }
 
 service ShortenerService {
-    rpc Shorten(CreateShortenRequest) returns (CreateShortenResponse) {
+    rpc Shorten(ShortenRequest) returns (Bitlink) {
         option (google.api.http) = {
-            post: "/api/v1/shorten"
+            post: "/api/v1/bitlink"
             body: "*"
+        };
+    }
+
+    rpc GetBitlink(GetBitlinkRequest) returns (Bitlink) {
+        option (google.api.http) = {
+            get: "/api/v1/bitlink/{bitlink_id}"
         };
     }
 }

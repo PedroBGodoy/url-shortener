@@ -13,16 +13,19 @@ import (
 )
 
 type GRPCServer struct {
-	ShortenLinkUseCase usecase.ShortenLink
+	ShortenLinkUseCase usecase.ShortenUseCase
+	GetBitlinkUseCase  usecase.GetBitlinkUseCase
 	GrpcPort           string
 }
 
 func NewGRPCServer(
-	shortenLinkUseCase usecase.ShortenLink,
+	shortenLinkUseCase usecase.ShortenUseCase,
+	getBitlinkUseCase usecase.GetBitlinkUseCase,
 	grpcPort string,
 ) GRPCServer {
 	return GRPCServer{
 		ShortenLinkUseCase: shortenLinkUseCase,
+		GetBitlinkUseCase:  getBitlinkUseCase,
 		GrpcPort:           grpcPort,
 	}
 }
@@ -34,7 +37,10 @@ func (g *GRPCServer) Serve() {
 		log.Fatalln("Failed to listen:", err)
 	}
 
-	shortenerService := service.NewShortenerService(g.ShortenLinkUseCase)
+	shortenerService := service.NewShortenerService(
+		g.ShortenLinkUseCase,
+		g.GetBitlinkUseCase,
+	)
 
 	grpcServer := grpc.NewServer()
 	reflection.Register(grpcServer)
